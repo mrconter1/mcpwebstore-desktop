@@ -1,4 +1,4 @@
-const { app, BrowserWindow, Menu, Tray, ipcMain, session } = require('electron');
+const { app, BrowserWindow, Menu, Tray, ipcMain, session, nativeImage } = require('electron');
 const path = require('path');
 const fs = require('fs');
 
@@ -48,36 +48,120 @@ function createWindow() {
 
 // Create tray icon and context menu
 function createTray() {
-  tray = new Tray(path.join(__dirname, 'assets/icons/icon.png'));
-  const contextMenu = Menu.buildFromTemplate([
-    { label: 'Show MCP Desktop', click: () => mainWindow.show() },
-    { type: 'separator' },
-    { label: 'Quit', click: () => app.quit() }
-  ]);
+  try {
+    // For Windows, use a simple approach
+    if (process.platform === 'win32') {
+      // Just create a small empty image for the tray
+      const emptyIcon = nativeImage.createEmpty();
+      
+      // Ensure the tray instance is created only once
+      if (!tray) {
+        tray = new Tray(emptyIcon);
+        console.log('Created Windows tray with empty icon');
+      }
+    } else {
+      // For other platforms try using the actual icon
+      if (!tray) {
+        tray = new Tray(path.join(__dirname, 'assets/icons/icon.png'));
+      }
+    }
+    
+    // Set the context menu
+    const contextMenu = Menu.buildFromTemplate([
+      { label: 'Show MCP Desktop', click: () => {
+        if (mainWindow) {
+          mainWindow.show();
+          mainWindow.focus();
+        }
+      }},
+      { type: 'separator' },
+      { label: 'Quit', click: () => {
+        app.isQuitting = true;
+        app.quit();
+      }}
+    ]);
 
-  tray.setToolTip('MCP Web Store Desktop');
-  tray.setContextMenu(contextMenu);
-  
-  tray.on('click', () => {
-    mainWindow.isVisible() ? mainWindow.hide() : mainWindow.show();
-  });
+    tray.setToolTip('MCP Web Store Desktop');
+    tray.setContextMenu(contextMenu);
+    
+    // Single click toggles window visibility on Windows
+    tray.on('click', () => {
+      if (mainWindow) {
+        if (mainWindow.isVisible()) {
+          mainWindow.hide();
+        } else {
+          mainWindow.show();
+          mainWindow.focus();
+        }
+      }
+    });
+    
+    // Keep a reference to prevent garbage collection
+    global.trayRef = tray;
+    
+    console.log('Tray created successfully');
+  } catch (error) {
+    console.error('Failed to create tray:', error);
+  }
 }
 
 // This method will be called when Electron has finished initialization
 app.whenReady().then(() => {
+  // Create main window
   createWindow();
+  
+  // Create tray icon - Creating it here ensures the app is fully ready
   createTray();
+  
+  // Register the close event handler after everything is set up
+  mainWindow.on('close', (event) => {
+    if (!app.isQuitting) {
+      event.preventDefault();
+      mainWindow.hide();
+      console.log('Window hidden, app still running in tray');
+      
+      // On Windows, sometimes the tray icon can disappear
+      // Recreate it if necessary
+      if (process.platform === 'win32' && (!tray || tray.isDestroyed())) {
+        createTray();
+      }
+      
+      return false;
+    }
+    return true;
+  });
   
   app.on('activate', function () {
     // On macOS it's common to re-create a window in the app when the
     // dock icon is clicked and there are no other windows open.
     if (BrowserWindow.getAllWindows().length === 0) createWindow();
   });
+  
+  // Keep a global reference to the tray to prevent garbage collection
+  global.trayRef = tray;
 });
 
-// Quit when all windows are closed, except on macOS
+// Ensure the tray is always visible on Windows
+if (process.platform === 'win32') {
+  app.setAppUserModelId(app.name);
+}
+
+// Handle window-all-closed event
 app.on('window-all-closed', function () {
-  if (process.platform !== 'darwin') app.quit();
+  // Don't quit when window is closed
+  // Only quit when explicitly called via tray menu
+  if (process.platform === 'darwin') {
+    // On macOS, it's common for applications to stay active until the user quits
+    // explicitly with Cmd + Q
+  }
+});
+
+// Quit event handler - make sure to destroy the tray icon when actually quitting
+app.on('before-quit', () => {
+  app.isQuitting = true;
+  if (tray) {
+    tray.destroy();
+  }
 });
 
 // Handle IPC messages for MCP operations
