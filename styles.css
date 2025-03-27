@@ -7,6 +7,9 @@
   --light-text: #64748b;     /* Slate 500 */
   --card-bg: #ffffff;
   --border-color: #e2e8f0;   /* Slate 200 */
+  --error-color: #ef4444;    /* Red 500 */
+  --success-color: #10b981;  /* Emerald 500 */
+  --warning-color: #f59e0b;  /* Amber 500 */
 }
 
 /* Dark Mode */
@@ -20,6 +23,9 @@
     --light-text: #94a3b8;     /* Slate 400 */
     --card-bg: #1e293b;        /* Slate 800 */
     --border-color: #334155;   /* Slate 700 */
+    --error-color: #f87171;    /* Red 400 */
+    --success-color: #34d399;  /* Emerald 400 */
+    --warning-color: #fbbf24;  /* Amber 400 */
   }
 }
 
@@ -34,29 +40,113 @@ body {
   background-color: var(--bg-color);
   color: var(--text-color);
   line-height: 1.6;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+/* Tab navigation */
+.tabs {
+  display: flex;
+  background: var(--card-bg);
+  border-bottom: 1px solid var(--border-color);
+  height: 44px;
+  flex-shrink: 0;
+}
+
+.tab-button {
+  padding: 12px 24px;
+  cursor: pointer;
+  border: none;
+  background: none;
+  font-size: 14px;
+  color: var(--light-text);
+  transition: all 0.2s;
+}
+
+.tab-button.active {
+  background: var(--bg-color);
+  border-bottom: 2px solid var(--primary-color);
+  font-weight: 500;
+  color: var(--primary-color);
+}
+
+.tab-button:hover {
+  background-color: rgba(0, 0, 0, 0.05);
+}
+
+/* Tab content */
+.tab-content {
+  display: none;
+  height: calc(100vh - 44px);
+  width: 100%;
+}
+
+.tab-content.active {
+  display: block;
+}
+
+/* Webview */
+webview {
+  width: 100%;
+  height: 100%;
+  border: none;
 }
 
 .container {
   max-width: 900px;
   margin: 0 auto;
   padding: 20px;
-  min-height: 100vh;
+  height: 100%;
   display: flex;
   flex-direction: column;
+  overflow: auto;
 }
 
 header {
   padding: 20px 0;
   border-bottom: 1px solid var(--border-color);
   margin-bottom: 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
 header h1 {
   color: var(--primary-color);
 }
 
+.header-actions {
+  display: flex;
+  gap: 10px;
+}
+
+/* Badge for queue count */
+.with-badge {
+  position: relative;
+}
+
+.badge {
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  background-color: var(--error-color);
+  color: white;
+  border-radius: 50%;
+  width: 20px;
+  height: 20px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.7rem;
+  font-weight: bold;
+  display: none; /* Hidden by default */
+}
+
 main {
   flex: 1;
+  overflow: auto;
 }
 
 .welcome-card {
@@ -73,32 +163,33 @@ main {
   margin-bottom: 10px;
 }
 
-.mcp-list {
+.mcp-section {
   background-color: var(--card-bg);
   border-radius: 8px;
   padding: 20px;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
   border: 1px solid var(--border-color);
+  margin-bottom: 20px;
 }
 
-.mcp-list h3 {
+.mcp-section h3 {
   margin-bottom: 15px;
   color: var(--secondary-color);
 }
 
-.empty-state {
+.empty-state, .installed-empty-state {
   color: var(--light-text);
   font-style: italic;
   text-align: center;
   padding: 20px;
 }
 
-.empty-state a {
+.empty-state a, .installed-empty-state a {
   color: var(--primary-color);
   text-decoration: none;
 }
 
-.empty-state a:hover {
+.empty-state a:hover, .installed-empty-state a:hover {
   text-decoration: underline;
 }
 
@@ -107,6 +198,10 @@ main {
   align-items: center;
   padding: 15px;
   border-bottom: 1px solid var(--border-color);
+}
+
+.mcp-item:last-child {
+  border-bottom: none;
 }
 
 .mcp-icon {
@@ -120,6 +215,7 @@ main {
   color: white;
   font-weight: bold;
   margin-right: 15px;
+  flex-shrink: 0;
 }
 
 .mcp-details {
@@ -129,10 +225,30 @@ main {
 .mcp-name {
   font-weight: bold;
   margin-bottom: 5px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.mcp-category {
+  background-color: var(--secondary-color);
+  color: white;
+  font-size: 0.7rem;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-weight: normal;
 }
 
 .mcp-description {
   font-size: 0.9rem;
+  color: var(--light-text);
+  margin-bottom: 5px;
+}
+
+.mcp-meta {
+  display: flex;
+  gap: 10px;
+  font-size: 0.8rem;
   color: var(--light-text);
 }
 
@@ -156,6 +272,11 @@ button:hover {
   background-color: var(--primary-dark);
 }
 
+button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
 button.secondary {
   background-color: transparent;
   border: 1px solid var(--border-color);
@@ -164,6 +285,225 @@ button.secondary {
 
 button.secondary:hover {
   background-color: rgba(0, 0, 0, 0.05);
+}
+
+button.view-details {
+  background-color: transparent;
+  color: var(--primary-color);
+  border: 1px solid var(--primary-color);
+}
+
+button.view-details:hover {
+  background-color: rgba(59, 130, 246, 0.1);
+}
+
+/* Loading indicator */
+.loading-indicator {
+  display: none;
+  padding: 20px;
+  text-align: center;
+}
+
+.loader {
+  display: inline-block;
+  width: 30px;
+  height: 30px;
+  border: 3px solid var(--border-color);
+  border-radius: 50%;
+  border-top-color: var(--primary-color);
+  animation: spin 1s ease-in-out infinite;
+  margin-bottom: 10px;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* Modal styles */
+.modal {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 100;
+  overflow: auto;
+}
+
+.modal-container {
+  background-color: var(--card-bg);
+  margin: 10% auto;
+  padding: 20px;
+  width: 70%;
+  max-width: 600px;
+  border-radius: 8px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+  animation: modalFadeIn 0.3s;
+}
+
+@keyframes modalFadeIn {
+  from { opacity: 0; transform: translateY(-20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.modal-header {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 15px;
+}
+
+.close-button {
+  background-color: transparent;
+  color: var(--light-text);
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+  padding: 0;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.close-button:hover {
+  color: var(--text-color);
+  background-color: transparent;
+}
+
+.modal-content {
+  padding: 10px 0;
+}
+
+.modal-content h2 {
+  color: var(--primary-color);
+  margin-bottom: 10px;
+}
+
+.mcp-detail-meta {
+  display: flex;
+  gap: 15px;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+}
+
+.mcp-detail-meta .category {
+  background-color: var(--secondary-color);
+  color: white;
+  padding: 3px 8px;
+  border-radius: 4px;
+  font-size: 0.8rem;
+}
+
+.mcp-detail-meta .author {
+  color: var(--light-text);
+  font-size: 0.9rem;
+}
+
+.mcp-detail-meta .stars {
+  color: var(--warning-color);
+  font-weight: bold;
+  font-size: 0.9rem;
+}
+
+.mcp-detail-description {
+  margin-bottom: 20px;
+  line-height: 1.6;
+}
+
+.mcp-detail-tags {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 20px;
+}
+
+.mcp-detail-tags .tag {
+  background-color: rgba(59, 130, 246, 0.1);
+  color: var(--primary-color);
+  padding: 5px 10px;
+  border-radius: 15px;
+  font-size: 0.8rem;
+}
+
+.mcp-compatibility {
+  margin-bottom: 20px;
+}
+
+.mcp-compatibility h3 {
+  font-size: 1rem;
+  margin-bottom: 10px;
+  color: var(--secondary-color);
+}
+
+.mcp-compatibility ul {
+  list-style-type: disc;
+  padding-left: 20px;
+}
+
+.mcp-repo {
+  margin-bottom: 20px;
+}
+
+.mcp-repo a {
+  color: var(--primary-color);
+  text-decoration: none;
+}
+
+.mcp-repo a:hover {
+  text-decoration: underline;
+}
+
+.mcp-detail-actions {
+  margin-top: 20px;
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+/* Notification styles */
+.notification {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  padding: 12px 20px;
+  border-radius: 4px;
+  background-color: var(--success-color);
+  color: white;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  font-size: 0.9rem;
+  z-index: 200;
+  animation: notificationFadeIn 0.3s;
+  max-width: 300px;
+}
+
+.notification.error {
+  background-color: var(--error-color);
+}
+
+.notification.warning {
+  background-color: var(--warning-color);
+}
+
+.notification.fade-out {
+  animation: notificationFadeOut 0.5s;
+}
+
+@keyframes notificationFadeIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes notificationFadeOut {
+  from { opacity: 1; transform: translateY(0); }
+  to { opacity: 0; transform: translateY(20px); }
+}
+
+/* Styling for installed MCPs */
+.mcp-item.installed .mcp-icon {
+  background-color: var(--success-color);
 }
 
 footer {

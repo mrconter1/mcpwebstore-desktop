@@ -2,37 +2,62 @@
 <html>
 <head>
   <meta charset="UTF-8">
-  <title>MCP Web Store</title>
+  <title>MCP Web Store Desktop</title>
   <meta http-equiv="Content-Security-Policy" content="script-src 'self'">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <div class="container">
-    <header>
-      <h1>MCP Web Store</h1>
-    </header>
-    
-    <main>
-      <div class="welcome-card">
-        <h2>Welcome to MCP Web Store Desktop</h2>
-        <p>Your companion app for managing MCP servers</p>
-      </div>
-      
-      <section class="mcp-list">
-        <h3>Your Installed MCPs</h3>
-        <p class="empty-state">No MCPs installed yet. Visit <a href="https://mcpwebstore.com">MCP Web Store</a> to discover and install MCPs.</p>
-        
-        <!-- MCP items will be populated here dynamically -->
-        <div id="mcp-items-container"></div>
-      </section>
-    </main>
-    
-    <footer>
-      <p>MCP Web Store Desktop v1.0.0</p>
-    </footer>
+  <!-- Tab Navigation -->
+  <div class="tabs">
+    <button class="tab-button active" onclick="openTab('store-tab', event)">MCP Store</button>
+    <button class="tab-button" onclick="openTab('installed-tab', event)">Installed MCPs</button>
   </div>
-
+  
+  <!-- Tab Contents -->
+  <div id="store-tab" class="tab-content active">
+    <webview id="store-webview" src="http://localhost:3000" partition="persist:mcp-store"></webview>
+  </div>
+  
+  <div id="installed-tab" class="tab-content">
+    <div class="container">
+      <header>
+        <h1>Installed MCPs</h1>
+        <div class="header-actions">
+          <button id="refresh-installed-btn" title="Refresh list">↻</button>
+        </div>
+      </header>
+      
+      <main>
+        <p id="no-mcps-message" class="empty-state">No MCPs installed yet. Visit the store to install MCPs.</p>
+        <div id="installed-mcps-list">
+          <!-- MCP cards will be inserted here -->
+        </div>
+      </main>
+      
+      <footer>
+        <p>MCP Web Store Desktop v1.0.0</p>
+      </footer>
+    </div>
+  </div>
+  
+  <!-- Modal for MCP Details -->
+  <div id="mcp-detail-modal" class="modal">
+    <div class="modal-container">
+      <div class="modal-header">
+        <button id="close-modal" class="close-button">&times;</button>
+      </div>
+      <div id="modal-content" class="modal-content">
+        <!-- Content will be dynamically inserted here -->
+      </div>
+    </div>
+  </div>
+  
+  <!-- Notification template -->
+  <div id="notification-template" class="notification" style="display: none;">
+    <span class="notification-message"></span>
+  </div>
+  
   <script src="renderer.js"></script>
 </body>
 </html> 
