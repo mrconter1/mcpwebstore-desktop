@@ -30,7 +30,7 @@ function createWindow() {
       contextIsolation: true,
       webviewTag: true, // Enable webview tag
     },
-    icon: path.join(__dirname, 'assets/icons/icon.png'),
+    icon: path.join(__dirname, 'assets/icons/app_logo.png'),
   });
 
   // Allow CORS for local development
@@ -51,18 +51,18 @@ function createTray() {
   try {
     // For Windows, use a simple approach
     if (process.platform === 'win32') {
-      // Just create a small empty image for the tray
-      const emptyIcon = nativeImage.createEmpty();
+      // Use the app logo for Windows tray
+      const trayIcon = nativeImage.createFromPath(path.join(__dirname, 'assets/icons/app_logo.png'));
       
       // Ensure the tray instance is created only once
       if (!tray) {
-        tray = new Tray(emptyIcon);
-        console.log('Created Windows tray with empty icon');
+        tray = new Tray(trayIcon);
+        console.log('Created Windows tray with app logo');
       }
     } else {
-      // For other platforms try using the actual icon
+      // For other platforms use the app logo
       if (!tray) {
-        tray = new Tray(path.join(__dirname, 'assets/icons/icon.png'));
+        tray = new Tray(path.join(__dirname, 'assets/icons/app_logo.png'));
       }
     }
     
