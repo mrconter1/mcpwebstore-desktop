@@ -1,0 +1,13 @@
+{
+  "name": "mcpwebstore-desktop",
+  "version": "1.0.0",
+  "description": "Desktop client for MCP Web Store",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": ["mcp", "webstore", "desktop"],
+  "author": "",
+  "license": "ISC",
+  "de
