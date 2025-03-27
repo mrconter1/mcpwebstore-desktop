@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>MCP Web Store</title>
+  <meta http-equiv="Content-Security-Policy" content="script-src 'self'">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>MCP Web Store</h1>
+    </header>
+    
+    <main>
+      <div class="welcome-card">
+        <h2>Welcome to MCP Web Store Desktop</h2>
+        <p>Your companion app for managing MCP servers</p>
+      </div>
+      
+      <section class="mcp-list">
+        <h3>Your Installed MCPs</h3>
+        <p class="empty-state">No MCPs installed yet. Visit <a href="https://mcpwebstore.com">MCP Web Store</a> to discover and install MCPs.</p>
+        
+        <!-- MCP items will be populated here dynamically -->
+        <div id="mcp-items-container"></div>
+      </section>
+    </main>
+    
+    <footer>
+      <p>MCP Web Store Desktop v1.0.0</p>
+    </footer>
+  </div>
+
+  <script src="renderer.js"></script>
+</body>
+</html> 

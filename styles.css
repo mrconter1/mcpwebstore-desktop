@@ -1,0 +1,175 @@
+:root {
+  --primary-color: #3b82f6;  /* Blue 500 */
+  --primary-dark: #2563eb;   /* Blue 600 */
+  --secondary-color: #4338ca; /* Indigo 700 */
+  --bg-color: #f8fafc;       /* Slate 50 */
+  --text-color: #1e293b;     /* Slate 800 */
+  --light-text: #64748b;     /* Slate 500 */
+  --card-bg: #ffffff;
+  --border-color: #e2e8f0;   /* Slate 200 */
+}
+
+/* Dark Mode */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --primary-color: #3b82f6;  /* Blue 500 */
+    --primary-dark: #2563eb;   /* Blue 600 */
+    --secondary-color: #4f46e5; /* Indigo 600 */
+    --bg-color: #0f172a;       /* Slate 900 */
+    --text-color: #e2e8f0;     /* Slate 200 */
+    --light-text: #94a3b8;     /* Slate 400 */
+    --card-bg: #1e293b;        /* Slate 800 */
+    --border-color: #334155;   /* Slate 700 */
+  }
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  background-color: var(--bg-color);
+  color: var(--text-color);
+  line-height: 1.6;
+}
+
+.container {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 20px;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+header {
+  padding: 20px 0;
+  border-bottom: 1px solid var(--border-color);
+  margin-bottom: 20px;
+}
+
+header h1 {
+  color: var(--primary-color);
+}
+
+main {
+  flex: 1;
+}
+
+.welcome-card {
+  background-color: var(--card-bg);
+  border-radius: 8px;
+  padding: 20px;
+  margin-bottom: 20px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+  border: 1px solid var(--border-color);
+}
+
+.welcome-card h2 {
+  color: var(--primary-color);
+  margin-bottom: 10px;
+}
+
+.mcp-list {
+  background-color: var(--card-bg);
+  border-radius: 8px;
+  padding: 20px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+  border: 1px solid var(--border-color);
+}
+
+.mcp-list h3 {
+  margin-bottom: 15px;
+  color: var(--secondary-color);
+}
+
+.empty-state {
+  color: var(--light-text);
+  font-style: italic;
+  text-align: center;
+  padding: 20px;
+}
+
+.empty-state a {
+  color: var(--primary-color);
+  text-decoration: none;
+}
+
+.empty-state a:hover {
+  text-decoration: underline;
+}
+
+.mcp-item {
+  display: flex;
+  align-items: center;
+  padding: 15px;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.mcp-icon {
+  width: 40px;
+  height: 40px;
+  background-color: var(--primary-color);
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-weight: bold;
+  margin-right: 15px;
+}
+
+.mcp-details {
+  flex: 1;
+}
+
+.mcp-name {
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+
+.mcp-description {
+  font-size: 0.9rem;
+  color: var(--light-text);
+}
+
+.mcp-actions {
+  display: flex;
+  gap: 10px;
+}
+
+button {
+  background-color: var(--primary-color);
+  color: white;
+  border: none;
+  padding: 8px 15px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: background-color 0.2s;
+}
+
+button:hover {
+  background-color: var(--primary-dark);
+}
+
+button.secondary {
+  background-color: transparent;
+  border: 1px solid var(--border-color);
+  color: var(--text-color);
+}
+
+button.secondary:hover {
+  background-color: rgba(0, 0, 0, 0.05);
+}
+
+footer {
+  text-align: center;
+  padding: 20px 0;
+  color: var(--light-text);
+  font-size: 0.9rem;
+  margin-top: 20px;
+} 

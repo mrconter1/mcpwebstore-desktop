@@ -5,9 +5,38 @@
   "main": "main.js",
   "scripts": {
     "start": "electron .",
+    "build": "electron-builder",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "keywords": ["mcp", "webstore", "desktop"],
+  "keywords": [
+    "mcp",
+    "webstore",
+    "desktop"
+  ],
   "author": "",
   "license": "ISC",
-  "de
+  "devDependencies": {
+    "electron": "^30.0.0",
+    "electron-builder": "^24.9.1"
+  },
+  "dependencies": {
+    "electron-squirrel-startup": "^1.0.0"
+  },
+  "build": {
+    "appId": "com.mcpwebstore.desktop",
+    "productName": "MCP Web Store",
+    "mac": {
+      "category": "public.app-category.utilities"
+    },
+    "win": {
+      "target": ["nsis"]
+    },
+    "linux": {
+      "target": ["AppImage", "deb"]
+    },
+    "protocols": {
+      "name": "MCP Web Store Protocol",
+      "schemes": ["mcpwebstore"]
+    }
+  }
+}
